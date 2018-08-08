@@ -43,7 +43,8 @@ ADD start.sh /root/start.sh
 # Start container
 ENV API_KEY=""\
     API_ENDPOINT=""\
+    ACCOUNT_ID=""\
     CLUSTER=""\
-    REGION=""
+    USERNAME=""
 
 CMD ./start.sh

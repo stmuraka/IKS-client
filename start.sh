@@ -1,8 +1,11 @@
 #!/bin/sh
 
-# update the plugins
+set -e
+
+# Update the plugins if available
 ibmcloud plugin update container-service -r Bluemix
 ibmcloud plugin update container-registry -r Bluemix
+echo ""
 
 # Login to IBM Cloud
 login_cmd="ibmcloud login"
@@ -12,6 +15,13 @@ if [ ! -z ${API_KEY} ]; then
 fi
 if [ ! -z ${API_ENDPOINT} ]; then
     login_cmd="${login_cmd} -a ${API_ENDPOINT}"
+fi
+if [ ! -z ${ACCOUNT_ID} ]; then
+    login_cmd="${login_cmd} -c ${ACCOUNT_ID}"
+fi
+if [ ! -z ${USERNAME} ]; then
+    echo "User: ${USERNAME}"
+    login_cmd="${login_cmd} -u ${USERNAME}"
 fi
 ${login_cmd}
 
