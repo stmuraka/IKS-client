@@ -2,6 +2,8 @@
 
 set -e
 
+# Update the cli if available
+ibmcloud update -f
 # Update the plugins if available
 ibmcloud plugin update container-service -r Bluemix
 ibmcloud plugin update container-registry -r Bluemix

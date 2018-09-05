@@ -9,13 +9,14 @@ RUN apk update; \
     apk add \
         curl \
         bash \
-        bash-completion
+        bash-completion \
+        sudo
 
 # update shell to bash
 RUN sed -i -e '/^root/ s/\/bin\/ash/\/bin\/bash/' /etc/passwd; \
     echo "export PS1='\u@\h:\W \$ '" >> ~/.bashrc; \
     echo "source /etc/profile.d/bash_completion.sh" >> ~/.bashrc; \
-    echo "source /usr/local/ibmcloud/bx/bash_autocomplete" >> ~/.bashrc; \
+    echo "source /usr/local/ibmcloud/autocomplete/bash_autocomplete" >> ~/.bashrc; \
     echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 WORKDIR /root/
