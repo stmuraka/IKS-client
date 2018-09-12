@@ -1,8 +1,8 @@
 FROM alpine:latest
 MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
-ARG CALICOCTL_VERSION=3.1.3
-ARG KUBECTL_VERSION=1.11.1
+ARG CALICOCTL_VERSION=3.2.1
+ARG KUBECTL_VERSION=1.11.3
 
 RUN apk update; \
     apk upgrade; \
