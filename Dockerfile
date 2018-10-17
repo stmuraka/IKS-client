@@ -1,8 +1,9 @@
 FROM alpine:latest
 MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
-ARG CALICOCTL_VERSION=3.2.1
-ARG KUBECTL_VERSION=1.11.3
+ARG CALICOCTL_VERSION=3.2.3
+ARG KUBECTL_VERSION=1.12.1
+ARG HELM_VERSION=2.11.0
 
 RUN apk update; \
     apk upgrade; \
@@ -38,6 +39,18 @@ RUN chmod +x /usr/local/bin/kubectl
 ADD https://github.com/projectcalico/calicoctl/releases/download/v${CALICOCTL_VERSION}/calicoctl-linux-amd64 /usr/local/bin/calicoctl
 RUN chmod +x /usr/local/bin/calicoctl
 
+# Download helm
+ADD https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz /tmp/helm.tar.gz
+RUN tar -C /tmp -zxvf /tmp/helm.tar.gz \
+ && if [[ -f /tmp/linux-amd64/tiller ]]; then \
+     mv /tmp/linux-amd64/tiller /usr/local/bin/tiller-v${HELM_VERSION} \
+     && ln -s /usr/local/bin/tiller-v${HELM_VERSION} /usr/local/bin/tiller; \
+     fi \
+ && mv /tmp/linux-amd64/helm /usr/local/bin/helm-v${HELM_VERSION} \
+ && ln -s /usr/local/bin/helm-v${HELM_VERSION} /usr/local/bin/helm \
+ && rm -f /tmp/helm.tar.gz \
+ && rm -rf /tmp/linux-amd64
+
 # Add startup script
 ADD start.sh /root/start.sh
 
@@ -46,6 +59,7 @@ ENV API_KEY=""\
     API_ENDPOINT=""\
     ACCOUNT_ID=""\
     CLUSTER=""\
+    REGION=""\
     USERNAME=""
 
 CMD ./start.sh
