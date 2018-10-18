@@ -15,12 +15,34 @@ login_cmd="ibmcloud login"
 if [ ! -z ${API_KEY} ]; then
     login_cmd="${login_cmd} --apikey ${API_KEY}"
 fi
-if [ ! -z ${API_ENDPOINT} ]; then
-    login_cmd="${login_cmd} -a ${API_ENDPOINT}"
-fi
 if [ ! -z ${ACCOUNT_ID} ]; then
     login_cmd="${login_cmd} -c ${ACCOUNT_ID}"
 fi
+if [ ! -z ${REGION} ]; then
+    case ${REGION} in
+        "eu-de") 
+            API_ENDPOINT=https://api.eu-de.bluemix.net
+            ;;
+        "au-syd")
+            API_ENDPOINT=https://api.au-syd.bluemix.net
+            ;;
+        "us-east") 
+            API_ENDPOINT=https://api.us-east.bluemix.net
+            ;;
+        "us-south")
+            API_ENDPOINT=https://api.ng.bluemix.net
+            ;;
+        "eu-gb")
+            API_ENDPOINT=https://api.eu-gb.bluemix.net
+            ;;
+        *)
+            ;;
+    esac
+fi
+if [ ! -z ${API_ENDPOINT} ]; then
+    login_cmd="${login_cmd} -a ${API_ENDPOINT}"
+fi
+
 if [ ! -z ${USERNAME} ]; then
     echo "User: ${USERNAME}"
     login_cmd="${login_cmd} -u ${USERNAME}"
