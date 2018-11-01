@@ -1,8 +1,8 @@
 FROM alpine:latest
 MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
-ARG CALICOCTL_VERSION=3.2.3
-ARG KUBECTL_VERSION=1.12.1
+ARG CALICOCTL_VERSION=3.3.0
+ARG KUBECTL_VERSION=1.12.2
 ARG HELM_VERSION=2.11.0
 
 RUN apk update; \
@@ -11,7 +11,8 @@ RUN apk update; \
         curl \
         bash \
         bash-completion \
-        sudo
+        sudo \
+        vim
 
 # update shell to bash
 RUN sed -i -e '/^root/ s/\/bin\/ash/\/bin\/bash/' /etc/passwd; \
