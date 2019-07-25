@@ -9,44 +9,80 @@ ibmcloud plugin update container-service -r Bluemix
 ibmcloud plugin update container-registry -r Bluemix
 echo ""
 
-# Login to IBM Cloud
+# Build login command
 login_cmd="ibmcloud login"
 
+# Set the API endpoint
+if [ -z ${API_ENDPOINT} ]; then
+    # If the API endpoint is not specified, set the defaults
+    API_ENDPOINT="https://cloud.ibm.com"
+
+    # Check if the Test flag is enabled for the test environment
+    if [ ! -z ${TEST} ]; then
+        TEST=$(echo "${TEST}" | awk '{print tolower($0)}')
+        if [[ "${TEST}" == "0" || "${TEST}" == "true" ]]; then
+            API_ENDPOINT="https://test.cloud.ibm.com"
+        fi
+    fi
+fi
+login_cmd="${login_cmd} -a ${API_ENDPOINT}"
+
+# Set API key if specified
 if [ ! -z ${API_KEY} ]; then
     login_cmd="${login_cmd} --apikey ${API_KEY}"
 fi
+
+# Set Account ID if specified
 if [ ! -z ${ACCOUNT_ID} ]; then
     login_cmd="${login_cmd} -c ${ACCOUNT_ID}"
 fi
+
+# Valid Regions as of 20190724
 if [ ! -z ${REGION} ]; then
+    REGION=$(echo "${REGION}" | awk '{print tolower($0)}')
     case ${REGION} in
-        "eu-de") 
-            API_ENDPOINT=https://api.eu-de.bluemix.net
-            ;;
         "au-syd")
-            API_ENDPOINT=https://api.au-syd.bluemix.net
+            # Sydney
+            login_cmd="${login_cmd} -r ${REGION}"
             ;;
-        "us-east") 
-            API_ENDPOINT=https://api.us-east.bluemix.net
+        "ch-ctu")
+            # Chengdu
+            login_cmd="${login_cmd} -r ${REGION}"
             ;;
-        "us-south")
-            API_ENDPOINT=https://api.ng.bluemix.net
+        "eu-de")
+            # Frankfort
+            login_cmd="${login_cmd} -r ${REGION}"
             ;;
         "eu-gb")
-            API_ENDPOINT=https://api.eu-gb.bluemix.net
+            # London
+            login_cmd="${login_cmd} -r ${REGION}"
+            ;;
+        "jp-tok")
+            # Tokyo
+            login_cmd="${login_cmd} -r ${REGION}"
+            ;;
+        "us-east")
+            # Washington DC
+            login_cmd="${login_cmd} -r ${REGION}"
+            ;;
+        "us-south")
+            # Dallas
+            login_cmd="${login_cmd} -r ${REGION}"
             ;;
         *)
+            echo "WARNING: Unknown region: ${REGION}"
+            login_cmd="${login_cmd} --no-region"
             ;;
     esac
 fi
-if [ ! -z ${API_ENDPOINT} ]; then
-    login_cmd="${login_cmd} -a ${API_ENDPOINT}"
-fi
 
+# Set username if specified
 if [ ! -z ${USERNAME} ]; then
     echo "User: ${USERNAME}"
     login_cmd="${login_cmd} -u ${USERNAME}"
 fi
+
+# Execute Login Command
 ${login_cmd}
 
 # Get Cluster if not an environment var
@@ -62,6 +98,7 @@ fi
 cluster_config=$(ibmcloud cs cluster-config ${cluster} --admin | grep '^export')
 eval ${cluster_config}
 eval $(echo ${cluster_config} | awk '{print $2}')
+echo "Cluster config stored in: ${cluster_config}"
 
 # Get ETCD_URL
 ETCD_URL=$(kubectl get cm -n kube-system calico-config -o yaml | grep "etcd_endpoints:" | awk '{ print $2 }')

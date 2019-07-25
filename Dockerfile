@@ -22,7 +22,7 @@ RUN sed -i -e '/^root/ s/\/bin\/ash/\/bin\/bash/' /etc/passwd; \
     echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 WORKDIR /root/
-    
+
 # Install IBM Cloud CLI
 RUN curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
 
@@ -61,6 +61,7 @@ ENV API_KEY=""\
     ACCOUNT_ID=""\
     CLUSTER=""\
     REGION=""\
-    USERNAME=""
+    USERNAME=""\
+    TEST=""
 
 CMD ./start.sh
