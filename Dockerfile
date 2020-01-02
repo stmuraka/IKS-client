@@ -1,9 +1,9 @@
 FROM alpine:latest
 MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
-ARG CALICOCTL_VERSION=3.8.0
-ARG KUBECTL_VERSION=1.15.1
-ARG HELM_VERSION=2.14.2
+ARG CALICOCTL_VERSION=3.11.1
+ARG KUBECTL_VERSION=1.16.4
+ARG HELM_VERSION=2.16.1
 
 RUN apk update; \
     apk upgrade; \
@@ -20,6 +20,16 @@ RUN sed -i -e '/^root/ s/\/bin\/ash/\/bin\/bash/' /etc/passwd; \
     echo "source /etc/profile.d/bash_completion.sh" >> ~/.bashrc; \
     echo "source /usr/local/ibmcloud/autocomplete/bash_autocomplete" >> ~/.bashrc; \
     echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+# add aliases
+RUN echo "" >> ~/.bashrc; \
+    echo "# Aliases" >> ~/.bashrc; \
+    echo "alias ic='ibmcloud'" >> ~/.bashrc; \
+    echo "alias iks='ibmcloud ks'" >> ~/.bashrc; \
+    echo "alias icr='ibmcloud cr'" >> ~/.bashrc; \
+    echo "alias k='kubectl'" >> ~/.bashrc; \
+    echo "alias c='calicoctl'" >> ~/.bashrc; \
+    echo "alias h='helm'" >> ~/.bashrc
 
 WORKDIR /root/
 
