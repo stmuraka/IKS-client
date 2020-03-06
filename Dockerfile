@@ -1,8 +1,8 @@
 FROM alpine:latest
 MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
-ARG CALICOCTL_VERSION=3.11.1
-ARG KUBECTL_VERSION=1.16.4
+ARG CALICOCTL_VERSION=3.13.0
+ARG KUBECTL_VERSION=1.17.3
 ARG HELM_VERSION=2.16.1
 
 RUN apk update; \
@@ -34,13 +34,25 @@ RUN echo "" >> ~/.bashrc; \
 WORKDIR /root/
 
 # Install IBM Cloud CLI
-RUN curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
+RUN curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
 
 # Install IKS plugin
 RUN ibmcloud plugin install container-service -r Bluemix
 
 # Install ICR plugin
 RUN ibmcloud plugin install container-registry -r Bluemix
+
+# Install ICF plugin
+RUN ibmcloud plugin install cloud-functions -r Bluemix
+
+# Install COS plugin
+RUN ibmcloud plugin install cloud-object-storage -r Bluemix
+
+# Install Dev plugin
+RUN ibmcloud plugin install dev -r Bluemix
+
+# Install VPC plugin
+RUN ibmcloud plugin install vpc-infrastructure -r Bluemix
 
 # Download kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
@@ -71,7 +83,9 @@ ENV API_KEY=""\
     ACCOUNT_ID=""\
     CLUSTER=""\
     REGION=""\
+    RESOURCE_GROUP=""\
     USERNAME=""\
+    SSO=""\
     TEST=""
 
 CMD ./start.sh
