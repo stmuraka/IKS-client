@@ -2,8 +2,8 @@ FROM alpine:latest
 MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
 ARG CALICOCTL_VERSION=3.13.0
-ARG KUBECTL_VERSION=1.17.3
-ARG HELM_VERSION=2.16.1
+ARG KUBECTL_VERSION=1.17.4
+ARG HELM_VERSION=2.16.3
 
 RUN apk update; \
     apk upgrade; \
@@ -12,6 +12,7 @@ RUN apk update; \
         bash \
         bash-completion \
         sudo \
+        jq \
         vim
 
 # update shell to bash
@@ -30,6 +31,10 @@ RUN echo "" >> ~/.bashrc; \
     echo "alias k='kubectl'" >> ~/.bashrc; \
     echo "alias c='calicoctl'" >> ~/.bashrc; \
     echo "alias h='helm'" >> ~/.bashrc
+
+# Fix vi mapping
+RUN rm /usr/bin/vi; \
+    ln -s /usr/bin/vim /usr/bin/vi
 
 WORKDIR /root/
 
