@@ -111,36 +111,21 @@ ${login_cmd}
 
 # Get Cluster if not an environment var
 if [ -z ${CLUSTER} ]; then
-    ibmcloud cs clusters
+    ibmcloud ks clusters
     echo ""
     read -p 'Which cluster? ' cluster
-else
-    cluster=${CLUSTER}
+    CLUSTER=${cluster}
 fi
 
 # Setup cluster config
-cluster_config=$(ibmcloud cs cluster-config ${cluster} --admin | grep '^export')
-eval ${cluster_config}
-eval $(echo ${cluster_config} | awk '{print $2}')
-echo "Cluster config stored in: ${cluster_config}"
+ibmcloud ks cluster config --cluster ${CLUSTER} --network >/dev/null 2>&1
+kubectx=$(kubectl config view -o jsonpath='{.current-context}')
+cluster_name=$(echo "${kubectx}" | sed -e 's/\/admin//')
+KUBECONFIG=$(kubectl config view -o jsonpath="{.clusters[?(@.name==\"${cluster_name}\")].cluster.certificate-authority}")
+CERTS_DIR=$(dirname ${KUBECONFIG})
 
-# Get ETCD_URL
-ETCD_URL=$(kubectl get cm -n kube-system calico-config -o yaml | grep "etcd_endpoints:" | awk '{ print $2 }')
-CERTS_DIR=$(dirname $KUBECONFIG)
-capem_file=$(ls `dirname $KUBECONFIG` | grep "ca-")
-
-# Setup Calico config
+# Copy Calico config
 mkdir -p /etc/calico
-cat <<- EOF > /etc/calico/calicoctl.cfg
-apiVersion: projectcalico.org/v3
-kind: CalicoAPIConfig
-metadata:
-spec:
-    datastoreType: etcdv3
-    etcdEndpoints: ${ETCD_URL}
-    etcdKeyFile: ${CERTS_DIR}/admin-key.pem
-    etcdCertFile: ${CERTS_DIR}/admin.pem
-    etcdCACertFile: ${CERTS_DIR}/${capem_file}
-EOF
+cp ${CERTS_DIR}/calicoctl.cfg /etc/calico/calicoctl.cfg
 
 bash
