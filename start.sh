@@ -37,55 +37,14 @@ if [ ! -z ${ACCOUNT_ID} ]; then
     login_cmd="${login_cmd} -c ${ACCOUNT_ID}"
 fi
 
-# Valid Regions as of 20200306
 if [ ! -z ${REGION} ]; then
-    REGION=$(echo "${REGION}" | awk '{print tolower($0)}')
-    case ${REGION} in
-        "au-syd")
-            # Sydney
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "eu-de")
-            # Frankfort
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "eu-gb")
-            # London
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "in-che")
-            # Chennai
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "jp-osa")
-            # Osaka
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "jp-tok")
-            # Tokyo
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "kr-seo")
-            # Seoul
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "us-east")
-            # Washington DC
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "us-south")
-            # Dallas
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        "us-south-test")
-            # Dallas
-            login_cmd="${login_cmd} -r ${REGION}"
-            ;;
-        *)
-            echo "WARNING: Unknown region: ${REGION}"
-            login_cmd="${login_cmd} --no-region"
-            ;;
-    esac
+    # Get the valid regions
+    REGIONS=()
+    mapfile -t REGIONS < <(ibmcloud regions --output json | jq -r '.[].Name')
+
+    REGION="${REGION,,}"
+    # Check if the REGION specified is valid
+    [[ " ${REGIONS[@]} " =~ " ${REGION} " ]] && login_cmd="${login_cmd} -r ${REGION}" || { echo "WARNING: Unknown region: ${REGION}"; login_cmd="${login_cmd} --no-region"; }
 fi
 
 # Set resource group if specified
@@ -127,5 +86,8 @@ CERTS_DIR=$(dirname ${KUBECONFIG})
 # Copy Calico config
 mkdir -p /etc/calico
 cp ${CERTS_DIR}/calicoctl.cfg /etc/calico/calicoctl.cfg
+
+# Disable usage collection
+ibmcloud config --usage-stats-collect false
 
 bash

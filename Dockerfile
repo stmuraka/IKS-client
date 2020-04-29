@@ -1,13 +1,13 @@
 FROM alpine:latest
 MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
-ARG CALICOCTL_VERSION=3.13.0
-ARG KUBECTL_VERSION=1.17.4
-ARG HELM_VERSION=2.16.3
+ARG CALICOCTL_VERSION=3.13.3
+ARG KUBECTL_VERSION=1.18.2
+ARG HELM_VERSION=2.16.6
 
 RUN apk update; \
     apk upgrade; \
-    apk add \
+    apk add --no-cache \
         curl \
         bash \
         bash-completion \
