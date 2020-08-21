@@ -1,11 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
 # Update the cli if available
 ibmcloud update -f
 # Update the plugins if available
-ibmcloud plugin update --all --force
+#ibmcloud plugin update --all --force
+ic_plugins=()
+mapfile -t ic_plugins < <(ibmcloud plugin list --output json | jq -r '.[].Name')
+for p in ${ic_plugins[*]}; do
+    ibmcloud plugin update ${p} -f
+done
+
 echo ""
 
 # Build login command
