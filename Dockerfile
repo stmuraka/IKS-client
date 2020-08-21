@@ -53,9 +53,6 @@ RUN ibmcloud plugin install cloud-functions -r Bluemix
 # Install COS plugin
 RUN ibmcloud plugin install cloud-object-storage -r Bluemix
 
-# Install Dev plugin
-RUN ibmcloud plugin install dev -r Bluemix
-
 # Install VPC plugin
 RUN ibmcloud plugin install vpc-infrastructure -r Bluemix
 
