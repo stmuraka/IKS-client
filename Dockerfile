@@ -4,6 +4,7 @@ MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 ARG CALICOCTL_VERSION=3.15.1
 ARG KUBECTL_VERSION=1.18.8
 ARG HELM_VERSION=2.16.10
+ARG HELM3_VERSION=3.3.1
 
 RUN apk update; \
     apk upgrade; \
@@ -64,7 +65,7 @@ RUN chmod +x /usr/local/bin/kubectl
 ADD https://github.com/projectcalico/calicoctl/releases/download/v${CALICOCTL_VERSION}/calicoctl-linux-amd64 /usr/local/bin/calicoctl
 RUN chmod +x /usr/local/bin/calicoctl
 
-# Download helm
+# Download helm v2
 ADD https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz /tmp/helm.tar.gz
 RUN tar -C /tmp -zxvf /tmp/helm.tar.gz \
  && if [[ -f /tmp/linux-amd64/tiller ]]; then \
@@ -74,6 +75,13 @@ RUN tar -C /tmp -zxvf /tmp/helm.tar.gz \
  && mv /tmp/linux-amd64/helm /usr/local/bin/helm-v${HELM_VERSION} \
  && ln -s /usr/local/bin/helm-v${HELM_VERSION} /usr/local/bin/helm \
  && rm -f /tmp/helm.tar.gz \
+ && rm -rf /tmp/linux-amd64
+
+# Download helm v3
+ADD https://get.helm.sh/helm-v${HELM3_VERSION}-linux-amd64.tar.gz /tmp/helm3.tar.gz
+RUN tar -C /tmp -zxvf /tmp/helm3.tar.gz \
+ && mv /tmp/linux-amd64/helm /usr/local/bin/helm-v${HELM3_VERSION} \
+ && rm -f /tmp/helm3.tar.gz \
  && rm -rf /tmp/linux-amd64
 
 # Add startup script
