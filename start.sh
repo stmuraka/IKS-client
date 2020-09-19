@@ -2,6 +2,19 @@
 
 set -e
 
+# Display options
+echo "Environment variable options:
+    API_KEY (IAM API key)                                 = ${API_KEY}
+    API_ENDPOINT (default: cloud.ibm.com)                 = ${API_ENDPOINT}
+    ACCOUNT_ID (long id)                                  = ${ACCOUNT_ID}
+    CLUSTER (IKS cluster name)                            = ${CLUSTER}
+    REGION (e.g. us-south)                                = ${REGION}
+    RESOURCE_GROUP (default: default)                     = ${RESOURCE_GROUP}
+    USERNAME (IAM username)                               = ${USERNAME}
+    SSO (to enable, set =1)                               = ${SSO}
+    TEST (set the API Endpoint to test.cloud.ibm.com)     = ${TEST}
+"
+
 # Update the cli if available
 ibmcloud update -f
 # Update the plugins if available
