@@ -2,12 +2,15 @@
 
 set -e
 
+HELM=${HELM:-2}
+
 # Display options
 echo "Environment variable options:
     API_KEY (IAM API key)                                 = ${API_KEY}
     API_ENDPOINT (default: cloud.ibm.com)                 = ${API_ENDPOINT}
     ACCOUNT_ID (long id)                                  = ${ACCOUNT_ID}
     CLUSTER (IKS cluster name)                            = ${CLUSTER}
+    HELM (Helm version name)                              = ${HELM}
     REGION (e.g. us-south)                                = ${REGION}
     RESOURCE_GROUP (default: default)                     = ${RESOURCE_GROUP}
     USERNAME (IAM username)                               = ${USERNAME}
@@ -15,15 +18,22 @@ echo "Environment variable options:
     TEST (set the API Endpoint to test.cloud.ibm.com)     = ${TEST}
 "
 
+# If HELM=3 is specified, change the symlink
+if [[ ${HELM} -eq 3 ]]; then
+    rm /usr/local/bin/helm
+    helm3_path=$(ls /usr/local/bin/helm-v3* 2>/dev/null) || { echo "WARNING: Failed to get helm 3 path"; }
+    ln -s ${helm3_path} /usr/local/bin/helm
+fi
+
 # Update the cli if available
 ibmcloud update -f
 # Update the plugins if available
-#ibmcloud plugin update --all --force
-ic_plugins=()
-mapfile -t ic_plugins < <(ibmcloud plugin list --output json | jq -r '.[].Name')
-for p in ${ic_plugins[*]}; do
-    ibmcloud plugin update ${p} -f
-done
+ibmcloud plugin update --all --force
+#ic_plugins=()
+#mapfile -t ic_plugins < <(ibmcloud plugin list --output json | jq -r '.[].Name')
+#for p in ${ic_plugins[*]}; do
+#    ibmcloud plugin update ${p} -f
+#done
 
 echo ""
 

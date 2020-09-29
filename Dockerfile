@@ -92,6 +92,7 @@ ENV API_KEY=""\
     API_ENDPOINT=""\
     ACCOUNT_ID=""\
     CLUSTER=""\
+    HELM=""\
     REGION=""\
     RESOURCE_GROUP=""\
     USERNAME=""\
