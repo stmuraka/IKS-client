@@ -117,6 +117,7 @@ mkdir -p /etc/calico
 cp ${CERTS_DIR}/calicoctl.cfg /etc/calico/calicoctl.cfg
 
 # Disable usage collection
-ibmcloud config --usage-stats-collect false
+# No longer valid in v 1.3+
+# ibmcloud config --usage-stats-collect false 2>/dev/null
 
 bash
