@@ -5,6 +5,7 @@ ARG CALICOCTL_VERSION=3.17.2
 ARG KUBECTL_VERSION=1.20.2
 ARG HELM_VERSION=2.17.0
 ARG HELM3_VERSION=3.5.2
+ARG OC_VERSION=4.6.28
 
 RUN apk update; \
     apk upgrade; \
@@ -43,19 +44,22 @@ WORKDIR /root/
 RUN curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
 
 # Install IKS plugin
-RUN ibmcloud plugin install container-service -r Bluemix
+RUN ibmcloud plugin install container-service
 
 # Install ICR plugin
-RUN ibmcloud plugin install container-registry -r Bluemix
+RUN ibmcloud plugin install container-registry
 
 # Install ICF plugin
-RUN ibmcloud plugin install cloud-functions -r Bluemix
+RUN ibmcloud plugin install cloud-functions
 
 # Install COS plugin
-RUN ibmcloud plugin install cloud-object-storage -r Bluemix
+RUN ibmcloud plugin install cloud-object-storage
 
 # Install VPC plugin
-RUN ibmcloud plugin install vpc-infrastructure -r Bluemix
+RUN ibmcloud plugin install vpc-infrastructure
+
+# Install Kubernetes Service observability plug-in
+RUN ibmcloud plugin install observe-service
 
 # Download kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
@@ -83,6 +87,18 @@ RUN tar -C /tmp -zxvf /tmp/helm3.tar.gz \
  && mv /tmp/linux-amd64/helm /usr/local/bin/helm-v${HELM3_VERSION} \
  && rm -f /tmp/helm3.tar.gz \
  && rm -rf /tmp/linux-amd64
+
+# Download oc
+ADD https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz /tmp/oc.tar.gz
+RUN tar -C /tmp -zxvf /tmp/oc.tar.gz \
+ && mv /tmp/oc /usr/local/bin/oc \
+ && rm -f /tmp/oc.tar.gz kubectl README.md \
+ && alias oc='/lib/ld-musl-x86_64.so.1 --library-path /lib /usr/local/bin/oc'
+
+# Download odo (OpenShift Do) client
+ADD https://mirror.openshift.com/pub/openshift-v4/clients/odo/latest/odo-linux-amd64 /usr/local/bin/odo
+RUN chmod 755 /usr/local/bin/odo \
+ && alias odo='/lib/ld-musl-x86_64.so.1 --library-path /lib /usr/local/bin/odo'
 
 # Add startup script
 ADD start.sh /root/start.sh
