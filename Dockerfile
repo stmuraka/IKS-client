@@ -29,10 +29,13 @@ RUN echo "" >> ~/.bashrc; \
     echo "# Aliases" >> ~/.bashrc; \
     echo "alias ic='ibmcloud'" >> ~/.bashrc; \
     echo "alias iks='ibmcloud ks'" >> ~/.bashrc; \
+    echo "alias ioc='ibmcloud oc'" >> ~/.bashrc; \
     echo "alias icr='ibmcloud cr'" >> ~/.bashrc; \
     echo "alias k='kubectl'" >> ~/.bashrc; \
     echo "alias c='calicoctl'" >> ~/.bashrc; \
-    echo "alias h='helm'" >> ~/.bashrc
+    echo "alias h='helm'" >> ~/.bashrc; \
+    echo "alias oc='/lib/ld-musl-x86_64.so.1 --library-path /lib /usr/local/bin/oc'" >> ~/.bashrc; \
+    echo "alias odo='/lib/ld-musl-x86_64.so.1 --library-path /lib /usr/local/bin/odo'" >> ~/.bashrc
 
 # Fix vi mapping
 RUN rm /usr/bin/vi; \
@@ -92,13 +95,11 @@ RUN tar -C /tmp -zxvf /tmp/helm3.tar.gz \
 ADD https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OC_VERSION}/openshift-client-linux-${OC_VERSION}.tar.gz /tmp/oc.tar.gz
 RUN tar -C /tmp -zxvf /tmp/oc.tar.gz \
  && mv /tmp/oc /usr/local/bin/oc \
- && rm -f /tmp/oc.tar.gz kubectl README.md \
- && alias oc='/lib/ld-musl-x86_64.so.1 --library-path /lib /usr/local/bin/oc'
+ && rm -f /tmp/oc.tar.gz kubectl README.md
 
 # Download odo (OpenShift Do) client
 ADD https://mirror.openshift.com/pub/openshift-v4/clients/odo/latest/odo-linux-amd64 /usr/local/bin/odo
-RUN chmod 755 /usr/local/bin/odo \
- && alias odo='/lib/ld-musl-x86_64.so.1 --library-path /lib /usr/local/bin/odo'
+RUN chmod 755 /usr/local/bin/odo
 
 # Add startup script
 ADD start.sh /root/start.sh
