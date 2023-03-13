@@ -19,13 +19,6 @@ echo "Environment variable options:
     TEST (set the API Endpoint to test.cloud.ibm.com)     = ${TEST}
 "
 
-# If HELM=2 is specified, change the symlink
-if [[ ${HELM} -eq 2 ]]; then
-    rm /usr/local/bin/helm
-    helm2_path=$(ls /usr/local/bin/helm-v2* 2>/dev/null) || { echo "WARNING: Failed to get helm 2 path"; }
-    ln -s ${helm2_path} /usr/local/bin/helm
-fi
-
 # Update the cli if available
 ibmcloud update -f
 # Update the plugins if available
