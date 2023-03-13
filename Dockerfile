@@ -14,6 +14,8 @@ RUN apk update; \
         bash-completion \
         sudo \
         jq \
+        yq \
+        docker \
         vim
 
 # update shell to bash
@@ -96,7 +98,7 @@ ENV API_KEY=""\
     API_ENDPOINT=""\
     ACCOUNT_ID=""\
     CLUSTER=""\
-    HELM=""\
+    HELM="3"\
     REGION=""\
     RESOURCE_GROUP=""\
     USERNAME=""\
