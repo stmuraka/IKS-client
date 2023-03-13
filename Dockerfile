@@ -47,23 +47,14 @@ WORKDIR /root/
 # Install IBM Cloud CLI
 RUN curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
 
-# Install IKS plugin
-RUN ibmcloud plugin install container-service
-
-# Install ICR plugin
-RUN ibmcloud plugin install container-registry
-
-# Install ICF plugin
-RUN ibmcloud plugin install cloud-functions
-
-# Install COS plugin
-RUN ibmcloud plugin install cloud-object-storage
-
-# Install VPC plugin
-RUN ibmcloud plugin install vpc-infrastructure
-
-# Install Kubernetes Service observability plug-in
-RUN ibmcloud plugin install observe-service
+# Install plugins: IKS, ICR, ICF, COS, VPC, observability
+RUN ibmcloud plugin install \
+    container-service \
+    container-registry \
+    cloud-functions \
+    cloud-object-storage \
+    vpc-infrastructure \
+    observe-service
 
 # Download kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
