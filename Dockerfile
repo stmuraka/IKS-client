@@ -52,7 +52,7 @@ RUN ibmcloud plugin install \
     container-service \
     container-registry \
     cloud-functions \
-    cloud-object-storage \
+#    cloud-object-storage \
     vpc-infrastructure \
     observe-service
 
