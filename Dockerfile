@@ -1,10 +1,10 @@
 FROM alpine:latest
 MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
-ARG CALICOCTL_VERSION=3.21.6
-ARG KUBECTL_VERSION=1.29.1
-ARG HELM3_VERSION=3.14.0
-ARG OC_VERSION=4.14.11
+ARG CALICOCTL_VERSION=anonymous
+ARG KUBECTL_VERSION=1.31.0
+ARG HELM3_VERSION=3.17.2
+ARG OC_VERSION=4.18.7
 
 RUN apk update; \
     apk upgrade; \
@@ -51,10 +51,11 @@ RUN curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
 RUN ibmcloud plugin install \
     container-service \
     container-registry \
-    cloud-functions \
-#    cloud-object-storage \
+    cloud-object-storage \
     vpc-infrastructure \
-    observe-service
+    observe-service \
+    secrets-manager \
+    privileged-access-gateway 
 
 # Download kubectl
 ADD https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl /usr/local/bin/kubectl
