@@ -3,8 +3,8 @@ MAINTAINER Shaun Murakami (stmuraka@gmail.com)
 
 ARG CALICOCTL_VERSION=anonymous
 ARG KUBECTL_VERSION=1.31.0
-ARG HELM3_VERSION=3.15.4
-ARG OC_VERSION=4.16.10
+ARG HELM3_VERSION=3.17.2
+ARG OC_VERSION=4.18.7
 
 RUN apk update; \
     apk upgrade; \
