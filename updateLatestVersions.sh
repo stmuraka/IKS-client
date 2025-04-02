@@ -25,7 +25,7 @@ echo ""
 echo "Getting latest versions..."
 latest_kubectl_version=$(curl -sSL https://storage.googleapis.com/kubernetes-release/release/stable.txt | tr -d 'v')
 echo "- Latest kubectl version: ${latest_kubectl_version}"
-latest_calicoctl_version=$(curl -sSL https://github.com/projectcalico/calicoctl/releases | grep tree | sed 's/.*\(title=.*"\).*/\1/' | awk '{print $2}' | cut -d '"' -f2 | grep -v 'beta' | awk -F '/' '{print $NF}' | tr -d 'v' | sort -rV | uniq | head -n 1)
+latest_calicoctl_version=$(curl -sSL https://github.com/projectcalico/calicoctl/releases/latest | grep '<a href=.*/tree/' | awk '{print $2}' | cut -d '=' -f2 | tr -d '"' | xargs basename | tr -d 'v')
 echo "- Latest calicoctl version: ${latest_calicoctl_version}"
 latest_helm3_version=$(curl -sSL https://api.github.com/repos/helm/helm/releases | jq -r '.[].tag_name' | grep '^v3' | grep -v '-' | tr -d 'v' | sort -V | tail -n 1)
 echo "- Latest helm 3 version: ${latest_helm3_version}"
